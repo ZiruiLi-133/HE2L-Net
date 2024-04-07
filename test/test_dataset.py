@@ -6,7 +6,7 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-from torch.utils.data._utils.collate import default_collate
+from torch.utils.data._utils.llate import default_collate
 
 
 def plot_images_with_boxes(images, boxes_batch, labels_str_batch):
