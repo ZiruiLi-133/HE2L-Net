@@ -2,4 +2,4 @@ datasets/
 .idea/
 .gitignore~
 ..gitignore.un~
-test/test_datasete.py
+test/test_dataset.py
