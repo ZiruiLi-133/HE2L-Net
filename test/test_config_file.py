@@ -1,4 +1,4 @@
 import os
 from configs import cfgs
 
-print(cfgs.DATASET.root)
+print(cfgs.DATASETS.root)
