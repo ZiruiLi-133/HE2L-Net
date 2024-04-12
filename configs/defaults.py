@@ -27,3 +27,4 @@ _C.TRAIN_Rec.epochs = 2
 _C.TRAIN_Rec.DATASET = CN()
 _C.TRAIN_Rec.DATASET.root = os.path.join(_C.DATASETS.root, 'kaggle_data_coco')
 _C.TRAIN_Rec.DATASET.config = os.path.join(_C.TRAIN_Rec.DATASET.root, 'kaggle_data_coco.yaml')
+_C.TRAIN_Rec.image_size = 640

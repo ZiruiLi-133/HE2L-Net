@@ -4,3 +4,4 @@ outputs/
 .gitignore~
 ..gitignore.un~
 test/test_dataset.py
+configs/__pycache__/
