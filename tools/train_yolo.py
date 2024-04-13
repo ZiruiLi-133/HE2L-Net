@@ -10,12 +10,12 @@ if __name__ == '__main__':
     # model = model.load('D:\Machine_Learning_Projects\HE2L-Net\outputs\yolo_runs\\train3\weights\\best.pt')
     model = model.load(os.path.join(cfgs.CHECKPOINTS.root, 'yolov8x.pt'))
     save_dir = os.path.join(cfgs.OUTPUTS.root, 'yolo_runs')
-    # results = model.train(data=cfgs.TRAIN_Rec.DATASET.config, epochs=2, imgsz=cfgs.TRAIN_Rec.image_size, project=save_dir, device=0)
+    results = model.train(data=cfgs.TRAIN_Rec.DATASET.config, epochs=10, imgsz=cfgs.TRAIN_Rec.image_size, project=save_dir, device=0)
 
     image_names = range(10)
     image_root = 'D:\Machine_Learning_Projects\HE2L-Net\datasets\kaggle_data_coco\images'
     image_path = [os.path.join(image_root, str(image_name)+'.jpg') for image_name in image_names]
-    pred_result = model(['D:\Machine_Learning_Projects\Datasets\coco128\images\\train2017\\000000000036.jpg'])
+    pred_result = model(image_path)
     # Visualization
     for result in pred_result:
         rgb_img = cv2.cvtColor(result.orig_img, cv2.COLOR_BGR2RGB)
