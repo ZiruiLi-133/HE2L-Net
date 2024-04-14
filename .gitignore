@@ -1,5 +1,4 @@
-datasets/
-datasets
+/datasets
 runs/
 .idea/
 outputs/
