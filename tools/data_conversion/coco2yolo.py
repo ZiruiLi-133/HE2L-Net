@@ -7,7 +7,7 @@ import yaml
 from PIL import Image
 from tqdm import tqdm
 
-from utils import make_dirs
+from .utils import make_dirs
 
 
 def convert(file, zip=False):
@@ -67,4 +67,4 @@ def convert(file, zip=False):
 
 
 if __name__ == "__main__":
-    convert("D:\Machine_Learning_Projects\HE2L-Net\datasets\calculus_val.json")
+    convert("D:\Machine_Learning_Projects\HE2L-Net\datasets\calculus_test.json")
