@@ -10,7 +10,7 @@ if __name__ == '__main__':
     # model = model.load(os.path.join(cfgs.CHECKPOINTS.root, 'yolov8x.pt'))
     model = model.load('D:\Machine_Learning_Projects\HE2L-Net\outputs\yolo_runs\\train5\weights\\best.pt')
     save_dir = os.path.join(cfgs.OUTPUTS.root, 'yolo_runs')
-    # results = model.train(data=cfgs.TRAIN_Rec.DATASET.config, epochs=1, imgsz=cfgs.TRAIN_Rec.image_size, project=save_dir, device=0)
+    results = model.train(data=cfgs.TRAIN_Rec.DATASET.config, epochs=cfgs.TRAIN_Rec.epochs, imgsz=cfgs.TRAIN_Rec.image_size, project=save_dir, device=0)
 
     image_names = range(10)
     image_root = 'D:\Machine_Learning_Projects\HE2L-Net\datasets\kaggle_data_coco\images'
