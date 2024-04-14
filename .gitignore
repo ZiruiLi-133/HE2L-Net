@@ -1,4 +1,6 @@
 datasets/
+datasets
+runs/
 .idea/
 outputs/
 .gitignore~
