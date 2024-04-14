@@ -21,7 +21,7 @@ def convert(file, zip=False):
     with open(file) as f:
         data = json.load(f)  # load JSON
     for img in tqdm(data['images'], desc=f"Converting {file}"):
-        im_path = os.path.join(cfgs.DATASETS.root, 'batch_1_images', img["file_name"])
+        im_path = os.path.join(cfgs.DATASETS.root, 'calculus_images', img["file_name"])
 
         im = Image.open(requests.get(im_path, stream=True).raw if im_path.startswith("http") else im_path)  # open
         width, height = im.size  # image size
@@ -67,4 +67,4 @@ def convert(file, zip=False):
 
 
 if __name__ == "__main__":
-    convert("D:\Machine_Learning_Projects\HE2L-Net\datasets\kaggle_data_coco.json")
+    convert("D:\Machine_Learning_Projects\HE2L-Net\datasets\calculus_val.json")
