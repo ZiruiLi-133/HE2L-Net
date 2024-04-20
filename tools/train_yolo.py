@@ -7,10 +7,10 @@ from matplotlib import pyplot as plt
 
 if __name__ == '__main__':
     model = YOLO('yolov8x.yaml')
-    model = model.load(os.path.join(cfgs.CHECKPOINTS.root, 'yolov8x.pt'))
-    # model = model.load('/home/zli133/ECE_208/HE2L-Net/outputs/yolo_runs/train5/weights/last.pt')
+    # model = model.load(os.path.join(cfgs.CHECKPOINTS.root, 'yolov8x.pt'))
+    model = model.load('/home/zli133/ECE_208/HE2L-Net/outputs/yolo_runs/train6/weights/last.pt')
     save_dir = os.path.join(cfgs.OUTPUTS.root, 'yolo_runs')
-    results = model.train(data=cfgs.TRAIN_Rec.DATASET.config, epochs=cfgs.TRAIN_Rec.epochs, imgsz=cfgs.TRAIN_Rec.image_size, project=save_dir, device=0)
+    # results = model.train(data=cfgs.TRAIN_Rec.DATASET.config, epochs=cfgs.TRAIN_Rec.epochs, imgsz=cfgs.TRAIN_Rec.image_size, project=save_dir, device=0)
 
     image_names = range(10)
     image_root = cfgs.TRAIN_Rec.DATASET.train_img
