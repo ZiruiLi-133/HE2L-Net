@@ -21,10 +21,13 @@ class MathExpressionDataset(Dataset):
             json_file = 'calculus_val.json'
         elif split == 'test':
             json_file = 'calculus_test.json'
-        with open(json_file) as f:
+        json_file_path = os.path.join(cfgs.TRAIN_Com.DATASET.root, json_file)
+        with open(json_file_path) as f:
             self.annotations = json.load(f)
-        self.img_dir = os.path.join(cfgs.TRAIN_Com.DATASET.root, 'calculus_images')
-        self.transform = transform
+        self.img_dir = cfgs.TRAIN_Com.DATASET.image_root
+        self.transform = transforms.Compose([
+                                            transforms.ToTensor(),  # Convert image to tensor.
+                                            ])
 
     def __len__(self):
         return len(self.annotations['images'])
@@ -41,11 +44,10 @@ class MathExpressionDataset(Dataset):
         boxes = torch.as_tensor([a['bbox'] for a in annotations], dtype=torch.float32)
         labels = torch.as_tensor([a['category_id'] for a in annotations], dtype=torch.int64)
         labels_str = [self.annotations['categories'][label.item() - 1]['name'] for label in labels]
-        print(f'label_str in getitem: {labels_str}')
-        # Your transform here, for example, converting PIL image to tensor.
-        if self.transform:
-            image = self.transform(image)
+        # print(f'label_str in getitem: {labels_str}')
 
+        image = self.transform(image)
+        print(f'image shape in getitem: {image.shape}')
         # Return the image, the bounding boxes, and the labels
         sample = {'image': image, 'latex_code': latex_code, 'boxes': boxes, 'labels': labels, 'labels_str': labels_str}
 
@@ -85,13 +87,9 @@ def custom_collate_fn(batch):
     }
 
 def get_calc_dataloader(batch_size, split='train', shuffle=True, num_workers=1):
-    transform = transforms.Compose([
-        transforms.ToTensor(),  # Convert image to tensor.
-    ])
 
     # Create the dataset
-    dataset = MathExpressionDataset(split=split,
-                                    transform=transform)
+    dataset = MathExpressionDataset(split=split)
 
     # Create the DataLoader
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=1, collate_fn=custom_collate_fn)
