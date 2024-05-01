@@ -5,18 +5,25 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 from torch.utils.data._utils.collate import default_collate
 from torchvision import transforms
+from configs import cfgs
 
 class MathExpressionDataset(Dataset):
-    def __init__(self, json_file, img_dir, transform=None):
+    def __init__(self, split, transform=None):
         """
         Args:
             json_file (string): Path to the JSON file with annotations.
             img_dir (string): Directory with all the images.
             transform (callable, optional): Optional transform to be applied on a sample.
         """
+        if split == 'train':
+            json_file = 'calculus_train.json'
+        elif split == 'val':
+            json_file = 'calculus_val.json'
+        elif split == 'test':
+            json_file = 'calculus_test.json'
         with open(json_file) as f:
             self.annotations = json.load(f)
-        self.img_dir = img_dir
+        self.img_dir = os.path.join(cfgs.TRAIN_Com.DATASET.root, 'calculus_images')
         self.transform = transform
 
     def __len__(self):
@@ -25,6 +32,7 @@ class MathExpressionDataset(Dataset):
     def __getitem__(self, idx):
         # Get the image info
         img_id = self.annotations['images'][idx]['id']
+        latex_code = self.annotations['images'][idx]['latex']
         img_name = os.path.join(self.img_dir, self.annotations['images'][idx]['file_name'])
         image = Image.open(img_name).convert('RGB')
 
@@ -39,7 +47,7 @@ class MathExpressionDataset(Dataset):
             image = self.transform(image)
 
         # Return the image, the bounding boxes, and the labels
-        sample = {'image': image, 'boxes': boxes, 'labels': labels, 'labels_str': labels_str}
+        sample = {'image': image, 'latex_code': latex_code, 'boxes': boxes, 'labels': labels, 'labels_str': labels_str}
 
         return sample
 
@@ -57,6 +65,7 @@ def custom_collate_fn(batch):
     """
     # Separate the components of the batch
     images = [item['image'] for item in batch]
+    latex_code = [item['latex_code'] for item in batch]
     boxes = [item['boxes'] for item in batch]
     labels = [item['labels'] for item in batch]
     labels_str = [item['labels_str'] for item in batch]  # No need to modify this
@@ -66,25 +75,22 @@ def custom_collate_fn(batch):
     collated_boxes = default_collate(boxes)
     collated_labels = default_collate(labels)
 
-    # No modification needed for labels_str, it's already in the desired format
-    # However, you can enforce or check the format here if necessary
-
     # Construct and return the final batch as a dictionary
     return {
         'image': collated_images,
+        'latex_code': latex_code,
         'boxes': collated_boxes,
         'labels': collated_labels,
         'labels_str': labels_str
     }
 
-def get_calc_dataloader(batch_size, shuffle=True, num_workers=1):
+def get_calc_dataloader(batch_size, split='train', shuffle=True, num_workers=1):
     transform = transforms.Compose([
         transforms.ToTensor(),  # Convert image to tensor.
     ])
 
     # Create the dataset
-    dataset = MathExpressionDataset(json_file='./kaggle_data_coco.json',
-                                    img_dir='D:\\Machine_Learning_Projects\\Datasets\\handwriting_calculas\\batch_1\\background_images',
+    dataset = MathExpressionDataset(split=split,
                                     transform=transform)
 
     # Create the DataLoader
