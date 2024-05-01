@@ -4,7 +4,7 @@ runs/
 outputs/
 .gitignore~
 ..gitignore.un~
-test/test_dataset.py
+/test/test_dataset.py
 configs/__pycache__/
 test/__pycache__/*
 tools/__pycache__/*
