@@ -16,6 +16,7 @@ with open(json_file_path) as f:
 categories = annotations['categories']
 for dict in categories:
     id = dict['id']
+    print(id)
     name = dict['name']
     symbol_to_id[name] = id
     id_to_symbol[id] = name
@@ -26,8 +27,8 @@ for symbol in additional_symbols:
     id_to_symbol[id_counter] = symbol
     id_counter += 1
 
-with open('symbol_to_id.json', 'w') as json_file:
+with open(os.path.join(cfgs.TRAIN_Com.DATASET.root, 'symbol_to_id.json'), 'w') as json_file:
     json.dump(symbol_to_id, json_file, indent=4)
 
-with open('id_to_symbol.json', 'w') as json_file:
+with open(os.path.join(cfgs.TRAIN_Com.DATASET.root, 'id_to_symbol.json'), 'w') as json_file:
     json.dump(id_to_symbol, json_file, indent=4)
