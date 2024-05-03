@@ -1,0 +1,63 @@
+path: 'calculus_dataset_yolo'  # dataset root dir
+train: 'train/images'  # train images (relative to path) 128 images
+val: 'val/images'  # val images (relative to path) 128 images
+test: 'test/images' # test images (optional)
+nc: 57
+names:
+- \lim_
+- a
+- \to
+- \frac
+- \pi
+- '4'
+- d
+- \left(
+- \sin
+- +
+- '-'
+- '6'
+- \sec
+- \right)
+- w
+- /
+- '5'
+- \tan
+- '2'
+- '3'
+- e
+- b
+- '7'
+- \cos
+- \theta
+- '8'
+- '='
+- x
+- '9'
+- '1'
+- y
+- h
+- k
+- g
+- \csc
+- \infty
+- '0'
+- \sqrt
+- r
+- \ln
+- n
+- u
+- \cot
+- \left|
+- \right|
+- p
+- t
+- z
+- \log
+- v
+- s
+- c
+- \cdot
+- .
+- ^
+- '{'
+- '}'
