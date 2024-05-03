@@ -8,8 +8,8 @@ import cv2
 if __name__ == '__main__':
     # print(torch.cuda.is_available())
     # print(torch.cuda.get_device_name(0))
-    # model = YOLO('/home/zli133/ECE_208/HE2L-Net/outputs/yolo_runs/train6/weights/last.pt')
-    model = YOLO('/home/zli133/ECE_208/HE2L-Net/outputs/yolo_runs/train6/weights/last.pt')
+    # model = YOLO('/home/zli133/ECE_208/HE2L-Net/outputs/yolo_runs/train9/weights/last.pt')
+    model = YOLO('/home/zli133/ECE_208/HE2L-Net/outputs/yolo_runs/train9/weights/best.pt')
 
     save_dir = os.path.join(cfgs.OUTPUTS.root, 'yolo_runs')
     # results = model.train(data=cfgs.TRAIN_Rec.DATASET.config, epochs=cfgs.TRAIN_Rec.epochs, imgsz=cfgs.TRAIN_Rec.image_size, project=save_dir, device=0)

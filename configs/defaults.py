@@ -29,12 +29,12 @@ _C.TRAIN_Rec = CN()
 _C.TRAIN_Rec.model = 'YOLO'
 _C.TRAIN_Rec.start_new = True
 _C.TRAIN_Rec.batch_size = 1
-_C.TRAIN_Rec.epochs = 50
+_C.TRAIN_Rec.epochs = 40
 _C.TRAIN_Rec.DATASET = CN()
 _C.TRAIN_Rec.DATASET.root = os.path.join(_C.DATASETS.root, 'calculus_dataset_yolo')
 _C.TRAIN_Rec.DATASET.train_img = os.path.join(_C.TRAIN_Rec.DATASET.root, 'train', 'images')
 _C.TRAIN_Rec.DATASET.test_img = os.path.join(_C.TRAIN_Rec.DATASET.root, 'test', 'images')
-_C.TRAIN_Rec.DATASET.config = os.path.join(_C.CONFIGS.dataset_configs, 'calculus_dataset.yaml')
+_C.TRAIN_Rec.DATASET.config = os.path.join(_C.CONFIGS.dataset_configs, 'calculus_dataset_yolo.yaml')
 _C.TRAIN_Rec.image_size = 640
 
 # ----Train Composer----
