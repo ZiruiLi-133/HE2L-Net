@@ -5,13 +5,14 @@ import json
 from configs import cfgs
 
 if __name__ == '__main__':
-    dataloader = get_calc_dataloader(batch_size=1)
+    dataloader = get_calc_dataloader(batch_size=1, shuffle=False)
     output_json_file_path = os.path.join(cfgs.OUTPUTS.root, 'sample_data_batch.json')
     sample_batch = {}
     data_iter = iter(dataloader)
     batch = next(data_iter)
     print(batch)
-    sample_batch['image'] = batch['image'].numpy().tolist()
+    # sample_batch['image'] = batch['image'].numpy().tolist()
+    sample_batch['image_name'] = batch['image_name']
     sample_batch['image_size'] = batch['image_size']
     sample_batch['latex_code'] = batch['latex_code']
     sample_batch['boxes'] = batch['boxes'].numpy().tolist()

@@ -1,4 +1,4 @@
-/datasets
+/datasets/*
 /utils/__pycache__/*
 runs/
 .idea/
