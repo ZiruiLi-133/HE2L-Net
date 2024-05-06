@@ -46,7 +46,7 @@ def convert(file, zip=False):
         labels = [a for a in data['annotations'] if a['image_id'] == img["id"]]
         for label in labels:
             # box
-            left, top, w, h = label["bbox"]  # top, left, height, width
+            left, top, w, h = label["bbox"]  # top, left, width, height
             xywh = [(left + w / 2) / width, (top + h / 2) / height, w / width, h / height]  # xywh normalized
 
             # class

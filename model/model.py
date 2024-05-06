@@ -1,6 +1,8 @@
 import json
-from tqdm import tqdm  # 引入tqdm
+from tqdm import tqdm 
 import re
+import pickle
+import os
 import torch
 import torch.nn as nn
 import math  # 确保导入math库
@@ -9,10 +11,13 @@ from torch.nn.utils.rnn import pad_sequence
 import torch
 from sklearn.model_selection import train_test_split
 from collections import defaultdict
+from configs import cfgs
 def load_and_merge_json_files(filenames):
+    
     merged_data = {'annotations': [], 'images': [], 'categories': []}
     for filename in tqdm(filenames, desc="Loading and merging JSON files"):
-        with open(filename, 'r') as file:
+        file_path = os.path.join(cfgs.DATASETS.root, 'calculus_dataset_com', filename)
+        with open(file_path, 'r') as file:
             data = json.load(file)
             merged_data['annotations'].extend(data.get('annotations', []))
             merged_data['images'].extend(data.get('images', []))
@@ -20,23 +25,21 @@ def load_and_merge_json_files(filenames):
             if not merged_data['categories']:
                 merged_data['categories'] = data.get('categories', [])
     return merged_data
+
 def tokenize_latex(latex_string):
-    # 使用正则表达式来识别LaTeX命令、括号、数字以及其他符号
     tokens = re.findall(r'\\[a-zA-Z]+|\{|\}|\[|\]|\(|\)|\d+|\S', latex_string)
-    # 检查括号是否平衡
     balance = 0
     for token in tokens:
         if token in ['{', '[', '(']:
             balance += 1
         elif token in ['}', ']', ')']:
             balance -= 1
-        # 如果在任何点括号出现负平衡，则表示括号不平衡
         if balance < 0:
             raise ValueError("Unbalanced brackets detected in the LaTeX string.")
-    # 检查是否所有括号都已闭合
     if balance != 0:
         raise ValueError("Unbalanced brackets detected in the LaTeX string.")
     return tokens
+
 def preprocess_data(data):
     images = data['images']
     annotations = data['annotations']
@@ -51,7 +54,7 @@ def preprocess_data(data):
         image_annotations = [ann for ann in annotations if ann['image_id'] == image_id]
         image_annotations.sort(key=lambda x: x['id'])  # 确保顺序与tokens一致
         token_bboxes = []
-        for token, annotation in zip(latex_tokens, image_annotations):
+        for token, annotation in zip(latex_tokens,image_annotations ):
             bbox = annotation['bbox']
             normalized_bbox = [
                 bbox[0] / image_width,
@@ -61,17 +64,22 @@ def preprocess_data(data):
             ]
             token_bboxes.append((token, normalized_bbox))
         preprocessed_data.append(token_bboxes)
+    
+    output_file_path = os.path.join(cfgs.OUTPUTS.root, 'preprocessed_data.pkl')
+    with open(output_file_path, 'wb') as file:
+        pickle.dump(preprocessed_data, file)
     return preprocessed_data
 # JSON文件列表
 filenames = [
-    'kaggle_data_coco_batch_1_to_6/kaggle_data_coco_batch_1_to_6.json',
-    'kaggle_data_coco_batch_7_and_8/kaggle_data_coco_batch_7_and_8.json',
-    'kaggle_data_coco_batch_9_and_10/kaggle_data_coco_batch_9_and_10.json'
+    'calculus_train.json',
+    'calculus_val.json',
+    'calculus_test.json'
 ]
 merged_data = load_and_merge_json_files(filenames)
 # 进行预处理
 preprocessed_data = preprocess_data(merged_data)
 print(preprocessed_data)
+
 class TransformerModel(nn.Module):
     def __init__(self, num_tokens, num_special_tokens, d_model=512, nhead=8,
                  num_encoder_layers=6, num_decoder_layers=6, dim_feedforward=2048, dropout=0.1):
@@ -182,7 +190,16 @@ def validate(model, data_loader, criterion, device):
             loss = criterion(output.transpose(1, 2), token_ids)
             total_loss += loss.item()
     return total_loss / len(data_loader)
+min_val_loss = float('inf')
 for epoch in range(epochs):
     train_loss = train(model, train_loader, optimizer, criterion, device)
     val_loss = validate(model, test_loader, criterion, device)
     print(f'Epoch {epoch+1}, Training Loss: {train_loss}, Validation Loss: {val_loss}')
+    torch.save(model.state_dict(), 'best_model.pth')
+    if val_loss < min_val_loss:
+        min_val_loss = val_loss
+        # Save the model with validation loss in the filename
+        filename = f'best_model_epoch_{epoch}_val_loss_{val_loss:.4f}.pth'  # Format loss to 4 decimal places
+        file_path = os.path.join(cfgs.CHECKPOINTS.root, 'com', filename)
+        torch.save(model.state_dict(), file_path)
+        print(f'Model saved as {filename} - Epoch {epoch+1}, Validation Loss: {val_loss}')

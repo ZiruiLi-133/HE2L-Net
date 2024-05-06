@@ -52,13 +52,13 @@ class MathExpressionDataset(Dataset):
             boxes[:, 2] = boxes[:, 2] / img_width  # Normalize width
             boxes[:, 3] = boxes[:, 3] / img_height  # Normalize height
         labels = torch.as_tensor([a['category_id'] for a in annotations], dtype=torch.int64)
-        labels_str = [self.annotations['categories'][label.item() - 1]['name'] for label in labels]
+        labels_str = [self.annotations['categories'][label.item()]['name'] for label in labels]
         # print(f'label_str in getitem: {labels_str}')
 
         image = self.transform(image)
         # print(f'image shape in getitem: {image.shape}')
         # Return the image, the bounding boxes, and the labels
-        sample = {'image': image, 'image_size': img_size,
+        sample = {'image': image, 'image_size': img_size, 'image_name': img_name,
                   'latex_code': latex_code, 'boxes': boxes,
                   'labels': labels, 'labels_str': labels_str}
         return sample
@@ -85,6 +85,7 @@ def custom_collate_fn(batch):
     # Separate the components of the batch
     image = [item['image'] for item in batch]
     image_size = batch[0]['image_size']
+    image_name = batch[0]['image_name']
     latex_code = [item['latex_code'] for item in batch]
     boxes = [item['boxes'] for item in batch]
     labels = [item['labels'] for item in batch]
@@ -100,6 +101,7 @@ def custom_collate_fn(batch):
     return {
         'image': collated_images,
         'image_size': image_size,
+        'image_name': image_name,
         'latex_code': collated_latex,
         'boxes': collated_boxes,
         'labels': collated_labels,

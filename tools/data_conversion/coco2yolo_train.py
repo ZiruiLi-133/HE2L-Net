@@ -51,7 +51,7 @@ def convert(file, zip=False):
 
             # class
             cls_num = label["category_id"]  # class name
-            cls = data['categories'][cls_num - 1]['name']
+            cls = data['categories'][cls_num]['name']
             # print(f'{cls} : {names.index(cls)}')
             line = names.index(cls), *xywh  # YOLO format (class_index, xywh)
             with open(label_path, "a") as f:
