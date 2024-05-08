@@ -2,8 +2,6 @@ import json
 import os
 import sys
 
-# Ensure the project root is on the Python path
-sys.path.append('E:/ECE208PROJ/HE2L-Net')
 from configs import cfgs
 
 # Load existing id_to_symbol from JSON
@@ -28,7 +26,13 @@ for image in test_data['images']:
         if symbol not in symbol_to_id:
             max_id += 1
             symbol_to_id[symbol] = max_id
-            id_to_symbol[str(max_id)] = symbol  # Make sure the keys are strings if your JSON uses string keys
+            id_to_symbol[max_id] = symbol  # Make sure the keys are strings if your JSON uses string keys
+
+special_tokens = ['<start>', '<end>', '<pad>']
+for special_token in special_tokens:
+    max_id += 1
+    symbol_to_id[special_token] = max_id
+    id_to_symbol[max_id] = special_token
 
 # Save the updated symbol_to_id back to JSON
 with open(os.path.join(cfgs.TRAIN_Com.DATASET.root, 'symbol_to_id.json'), 'w') as file:

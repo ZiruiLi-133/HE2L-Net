@@ -40,8 +40,9 @@ _C.TRAIN_Rec.image_size = 640
 # ----Train Composer----
 _C.TRAIN_Com = CN()
 _C.TRAIN_Com.DATASET = CN()
-_C.TRAIN_Com.batch_size = 1
-_C.TRAIN_Com.epochs = 2
+_C.TRAIN_Com.batch_size = 32    
+_C.TRAIN_Com.epochs = 1000
+_C.TRAIN_Com.start_new = True
 _C.TRAIN_Com.normalize_bbox = True
 _C.TRAIN_Com.DATASET.root = os.path.join(_C.DATASETS.root, 'calculus_dataset_com')
 _C.TRAIN_Com.DATASET.image_root = os.path.join(_C.TRAIN_Com.DATASET.root, 'calculus_images')

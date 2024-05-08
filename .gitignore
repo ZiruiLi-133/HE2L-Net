@@ -1,4 +1,5 @@
 /datasets/*
+/model/__pycache__/*
 /utils/__pycache__/*
 runs/
 .idea/
