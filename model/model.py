@@ -25,13 +25,13 @@ def create_token_to_id_mapping():
     #         _ = token_to_id[token]
     # # print(f'total number of tokens: {len(token_to_id)}')
     dict = None
-    with open(os.path.join(cfgs.TRAIN_Com.DATASET.root, 'symbol_to_id.json'), 'r') as f:
+    with open(os.path.join(cfgs.TRAIN_Com.DATASET.root, 'symbol_to_id_raw.json'), 'r') as f:
         dict = json.load(f)
     return dict
 
 def create_id_to_token_mapping():
     id_to_symbol = {}
-    file_path = os.path.join(cfgs.TRAIN_Com.DATASET.root, 'id_to_symbol.json')
+    file_path = os.path.join(cfgs.TRAIN_Com.DATASET.root, 'id_to_symbol_raw.json')
     with open(file_path, 'r') as f:
         dict_str_keys = json.load(f)
         id_to_symbol = {int(k): v for k, v in dict_str_keys.items()}
@@ -97,9 +97,9 @@ class TransformerModel(nn.Module):
         self.num_special_tokens = num_special_tokens
         self.bbox_embeddings = nn.Linear(4, d_model)
         self.pos_encoder = PositionalEncoding(d_model, dropout)
-        self.encoder_layer = nn.TransformerEncoderLayer(d_model, nhead, dim_feedforward, dropout, batch_first=True)
+        self.encoder_layer = nn.TransformerEncoderLayer(d_model, nhead, dim_feedforward, dropout)
         self.transformer_encoder = nn.TransformerEncoder(self.encoder_layer, num_encoder_layers)
-        self.decoder_layer = nn.TransformerDecoderLayer(d_model, nhead, dim_feedforward, dropout, batch_first=True)
+        self.decoder_layer = nn.TransformerDecoderLayer(d_model, nhead, dim_feedforward, dropout)
         self.transformer_decoder = nn.TransformerDecoder(self.decoder_layer, num_decoder_layers)
         self.out = nn.Linear(d_model, num_tokens)
         self.id_to_token = global_id_to_token
@@ -136,7 +136,7 @@ class TransformerModel(nn.Module):
         return mask
     
         
-    def forward(self, src, tgt, bboxes, gt=None, visualize=False, is_training=False, src_mask=None):
+    def forward(self, src, tgt, bboxes, gt=None, visualize=False, src_mask=None):
         src_embeddings = self.encoder_embeddings(src) + self.bbox_embeddings(bboxes)
         src_embeddings = self.pos_encoder(src_embeddings)
         if src_mask is None or src_mask.size(0) != len(src):
@@ -244,7 +244,7 @@ def train(model, data_loader, optimizer, criterion, device):
     for token_ids, bboxes, gt_ids in progress_bar:
         token_ids, bboxes, gt_ids = token_ids.to(device), bboxes.to(device), gt_ids.to(device)
         optimizer.zero_grad()
-        output = model(token_ids, bboxes, gt_ids, visualize=True, is_training=True)
+        output = model(token_ids, token_ids, bboxes, gt_ids, visualize=True)
         # print(f'gt_ids shape {gt_ids.shape}')
         max_length = gt_ids.shape[1]
         output = pad_or_truncate_output(output, max_length)
@@ -266,7 +266,7 @@ def validate(model, data_loader, criterion, device):
     with torch.no_grad():
         for token_ids, bboxes, gt_ids in progress_bar:
             token_ids, bboxes, gt_ids = token_ids.to(device), bboxes.to(device), gt_ids.to(device)
-            output = model(token_ids, bboxes, gt_ids, visualize=True, is_training=False)
+            output = model(token_ids, token_ids, bboxes, gt_ids, visualize=True)
             max_length = gt_ids.shape[1]
             output = pad_or_truncate_output(output, max_length)
             loss = criterion(output.transpose(1, 2), gt_ids)

@@ -29,14 +29,14 @@ for image in annotations['images']:
             id_counter += 1
 
 
-special_tokens = ['<start>', '<end>', '<pad>']
-for special_token in special_tokens:
-    symbol_to_id[special_token] = id_counter
-    id_to_symbol[id_counter] = special_token
-    id_counter += 1
+# special_tokens = ['<start>', '<end>', '<pad>']
+# for special_token in special_tokens:
+#     symbol_to_id[special_token] = id_counter
+#     id_to_symbol[id_counter] = special_token
+#     id_counter += 1
 
-with open(os.path.join(cfgs.TRAIN_Com.DATASET.root, 'symbol_to_id.json'), 'w') as json_file:
+with open(os.path.join(cfgs.TRAIN_Com.DATASET.root, 'symbol_to_id_raw.json'), 'w') as json_file:
     json.dump(symbol_to_id, json_file, indent=4)
 
-with open(os.path.join(cfgs.TRAIN_Com.DATASET.root, 'id_to_symbol.json'), 'w') as json_file:
+with open(os.path.join(cfgs.TRAIN_Com.DATASET.root, 'id_to_symbol_raw.json'), 'w') as json_file:
     json.dump(id_to_symbol, json_file, indent=4)
