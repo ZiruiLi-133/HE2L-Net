@@ -12,6 +12,10 @@ _C.CONFIGS = CN()
 _C.CONFIGS.root = os.path.join(_C.PROJECT_ROOT, 'configs')
 _C.CONFIGS.dataset_configs = os.path.join(_C.CONFIGS.root, 'datasets')
 
+# ----weights----
+_C.WEIGHTS = CN()
+_C.CONFIGS.root = os.path.join(_C.PROJECT_ROOT, 'weights')
+
 # ----Dataset----
 _C.DATASETS = CN()
 _C.DATASETS.root = os.path.join(_C.PROJECT_ROOT, 'datasets')
