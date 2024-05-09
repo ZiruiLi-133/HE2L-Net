@@ -1,1 +1,1 @@
-Hello
+To try the model, run presentexample.ipynb. Here are four images provided for trials included in folder 'sampleimages'.
