@@ -16,3 +16,4 @@ configs/__pycache__/
 test/__pycache__/*
 tools/__pycache__/*
 tools/data_conversion/__pycache__/*
+/test/runs/*
